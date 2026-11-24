@@ -1,0 +1,11 @@
+{
+ "tlb_ilo": "tlb",
+ "tlb_ihi": "tlb",
+ "tlb_d": "tlb",
+ "wa_flo": "word_addr",
+ "wa_fhi": "word_addr",
+ "wa_ptw": "word_addr",
+ "wa_data": "word_addr",
+ "wa_write": "word_addr",
+ "en_and_clr": "en_and"
+}

@@ -1,0 +1,9 @@
+# One mutant per line: text in rtl/barg_uart.v | its replacement. run_tests.py --mutants checks the testbench kills each one.
+wire t_par = (PARITY == 1) ? ~^tq : ^tq;|wire t_par = (PARITY == 1) ? ^tq : ^tq;
+!= (PARITY == 1));|!= (PARITY == 2));
+wire          r_ferr = ~&r_got[NS-1:NS-STOP_BITS];|wire          r_ferr = ~r_got[NS-1];
+localparam integer HALF = CLK_DIV / 2 - 1;|localparam integer HALF = 1;
+always @(posedge clk) rx_overrun <= !rst && r_push && !rq_in_ready;|always @(posedge clk) rx_overrun <= 1'b0;
+t_left <= NB[BW-1:0];|t_left <= NB[BW-1:0] - 1'b1;
+else if (r_s) r_st <= R_IDLE;|else if (1'b0) r_st <= R_IDLE;
+R_IDLE: if (r_prev && !r_s) begin|R_IDLE: if (!r_s) begin

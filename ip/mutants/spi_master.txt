@@ -1,0 +1,9 @@
+# One mutant per line: text in rtl/barg_spi_master.v | its replacement.
+wire          sample   = (CPHA == 0) ? leading : !leading;|wire          sample   = leading;
+wire [DATA_W-1:0] rx_next = LSB_FIRST ? ({miso, rx_sh} >> 1) : {rx_sh, miso};|wire [DATA_W-1:0] rx_next = {rx_sh, miso};
+sclk <= CPOL[0]; mosi|sclk <= 1'b0; mosi
+st <= S_RUN; cnt <= CLK_DIV[CW-1:0] - 1'b1;|st <= S_RUN; cnt <= 0;
+cs_n <= {CS_W{1'b1}}; rx_data <= rx_sh;|rx_data <= rx_sh;
+default: if (cnt != 0) cnt <= cnt - 1'b1; else st <= S_IDLE;|default: st <= S_IDLE;
+else if (CPHA == 1 || edges != 1) begin|else begin
+if (CPHA == 0) begin mosi <= first_bit; tx_sh <= tx_after_first; end|if (0) begin mosi <= first_bit; tx_sh <= tx_after_first; end

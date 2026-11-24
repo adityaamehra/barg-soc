@@ -1,0 +1,18 @@
+# One mutant per line: text in rtl/barg_i2c_master.v | its replacement.
+else if (cmd_start || !active) begin st <= S_START;|else if (cmd_start) begin st <= S_START;
+if (!l_read && sda_o && !s_sda) begin|if (1'b0 && !l_read && sda_o && !s_sda) begin
+if (st == S_ACK && !l_read) rsp_nack <= s_sda;|if (st == S_ACK && !l_read) rsp_nack <= 1'b0;
+sh <= {sh[6:0], s_sda};|sh <= {s_sda, sh[7:1]};
+S_ACK: if (l_stop) begin|S_ACK: if (1'b0) begin
+sda_o <= l_read ? l_nack : 1'b1; end|sda_o <= 1'b1; end
+wire hold = (STRETCH != 0) && (q == 2'd1) && !s_scl;|wire hold = 1'b0;
+if (st == S_START) sda_o <= 1'b0;|if (1'b0) sda_o <= 1'b0;
+else if (st == S_STOP) sda_o <= 1'b1;|else if (1'b0) sda_o <= 1'b1;
+if (active) begin st <= S_STOP;|if (1'b1) begin st <= S_STOP;
+default: begin st <= S_IDLE; active <= 1'b0;|default: begin st <= S_IDLE;
+if (st != S_STOP) scl_o <= 1'b0;|scl_o <= 1'b0;
+wire [CW-1:0] reload = CLK_DIV[CW-1:0] - 1'b1;|wire [CW-1:0] reload = CLK_DIV[CW-1:0] - 2'd2;
+rsp_nack <= 1'b0; rsp_arb_lost <= 1'b0; q <= 0;|rsp_arb_lost <= 1'b0; q <= 0;
+sh <= cmd_data;|sh <= 0;
+S_DATA: if (bc == 3'd7) begin|S_DATA: if (bc == 3'd6) begin
+# Dropped as equivalent in legal use: 'sda_o <= 1' on entering START (sda is already 1 after a NACKed read or a write, and an ACKed read may not be followed by a START), and 'l_read' for STOP-only ops (unused there).

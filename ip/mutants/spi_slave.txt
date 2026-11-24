@@ -1,0 +1,11 @@
+# One mutant per line: text in rtl/barg_spi_slave.v | its replacement.
+wire samp      = (CPHA == 0) ? lead : trail;|wire samp      = lead;
+wire shft      = (CPHA == 0) ? trail : lead;|wire shft      = trail;
+wire [DATA_W-1:0] rx_next = LSB_FIRST ? ({s_mosi, rx_sh} >> 1) : {rx_sh, s_mosi};|wire [DATA_W-1:0] rx_next = {rx_sh, s_mosi};
+wire out_bit   = LSB_FIRST ? tx_sh[0] : tx_sh[DATA_W-1];|wire out_bit   = tx_sh[DATA_W-1];
+if (cnt == DATA_W - 1) begin rx_data <= rx_next; rx_valid <= 1'b1; end|if (cnt == DATA_W - 1) begin rx_data <= rx_sh; rx_valid <= 1'b1; end
+if (cnt != 0 && !done) rx_short <= 1'b1;|if (!done) rx_short <= 1'b1;
+if (samp && !done) begin|if (samp) begin
+if (CPHA == 0) begin miso <= first_bit; tx_sh <= tx_after_first; end|if (0) begin miso <= first_bit; tx_sh <= tx_after_first; end
+cnt <= 0; rx_sh <= 0; tx_load <= 1'b1;|cnt <= 0; rx_sh <= 0;
+# Dropped as equivalent: the reset value of the synchroniser flops (cs_n high gates everything for the cycles that follow).

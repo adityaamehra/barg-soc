@@ -1,0 +1,16 @@
+# each line: text that occurs once in rtl/barg_dram.v | its replacement. The grid must fail on every one.
+r_idx <= r_idx + 1'b1;|r_idx <= r_idx;
+assign s_axi_rlast = (r_left == 8'd0);|assign s_axi_rlast = (r_left == 8'd1);
+r_idx <= s_axi_araddr[DEPTH_W+1:2]; r_left <= s_axi_arlen;|r_idx <= s_axi_araddr[DEPTH_W+1:2] + 1'b1; r_left <= s_axi_arlen;
+if (s_axi_wstrb[b])|if (1'b1)
+w_idx <= w_idx + 1'b1;|w_idx <= w_idx;
+assign s_axi_rdata = mem[r_idx];|assign s_axi_rdata = mem[r_idx + 1'b1];
+w_idx <= s_axi_awaddr[DEPTH_W+1:2]; w_state <= W_DATA;|w_idx <= s_axi_awaddr[DEPTH_W+1:2] + 1'b1; w_state <= W_DATA;
+if (s_axi_wlast) begin|if (1'b1) begin
+# (not listed: the gap between read beats only changes timing, never data: an equivalent mutant)
+assign s_axi_rresp = (ERR_EN != 0 && r_idx == ERR_IDX) ? 2'b10 : 2'b00;|assign s_axi_rresp = 2'b00;
+assign s_axi_bresp = w_err ? 2'b10 : 2'b00;|assign s_axi_bresp = 2'b00;
+if (ERR_EN != 0 && w_idx == ERR_IDX) w_err <= 1'b1;|if (ERR_EN != 0 && w_idx == ERR_IDX) w_err <= 1'b0;
+else for (b = 0; b < 4; b = b + 1) if (s_axi_wstrb[b])|if (1'b1) for (b = 0; b < 4; b = b + 1) if (s_axi_wstrb[b])
+w_state <= W_DATA; w_err <= 1'b0;|w_state <= W_DATA;
+assign s_axi_wready = (w_state == W_DATA) && ((JITTER == 0) || lfsr[7]);|assign s_axi_wready = (w_state == W_DATA) && (lfsr[7] || lfsr[8]) && ((JITTER == 0) || lfsr[7]);

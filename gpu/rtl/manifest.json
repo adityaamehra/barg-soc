@@ -1,0 +1,332 @@
+{
+  "unresolved": [
+    "simt_ctrl",
+    "lsu"
+  ],
+  "blocks": {
+    "warp_sched": {
+      "chosen": "f0097e41-42f9-48e7-ae57-68513e5d0622",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "warp_table": {
+      "chosen": "324c90a1-6285-4929-b1b4-4bff5fb73d80",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "generations": 3,
+      "hand_corrected": false
+    },
+    "pipe_ctrl": {
+      "chosen": "1fbc6c68-8f4c-41bb-b230-f89eabcf349e",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "imem": {
+      "chosen": "24f037be-ccef-4324-b285-1bb551dbf11c",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "sf_reg": {
+      "chosen": "a09e9286-ceb0-4f91-a0f6-374ec0908f01",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "decode": {
+      "chosen": "aff783d0-dee6-4663-8df3-e3580bd95e7b",
+      "verdict": "VERIFIED_LOWCONF",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "imm_gen": {
+      "chosen": "5dd3ac09-5a05-4946-98c1-6b1c7ce80077",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "regfile0": {
+      "chosen": "ac84c0bb-1bf2-4199-8c88-9a3c3badc206",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "regfile1": {
+      "chosen": "a021b3c9-0304-45f8-b94f-b464eb62af71",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "regfile2": {
+      "chosen": "3cd7aba1-859c-4013-a5a9-c1ea7a48c092",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "regfile3": {
+      "chosen": "aec4aa2b-d6e5-4258-a9b1-a7daee645635",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "operand": {
+      "chosen": "ab24714a-d4db-4b48-81cb-21d9e830fb1f",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "dx_reg": {
+      "chosen": "2ad4a04c-bd49-49b0-a238-6ff6419b59cd",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "valu": {
+      "chosen": "e789c541-a8ba-4ddd-9819-8b83cfc22056",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "vmul": {
+      "chosen": "b05f3105-c862-4460-86b9-5901c5d7dbb3",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "vdiv": {
+      "chosen": "76ac69dd-ccc8-47f1-a1ad-66f3c534bd52",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 5800 cycles of 40 traces; reference: agrees with the golden model on all 5800 cycles of 40 traces",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "branch_unit": {
+      "chosen": "771f1e44-ba4d-47a1-bf94-0297179b99b8",
+      "verdict": "VERIFIED_LOWCONF",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: differs from the golden model on 75 of 4000 inputs",
+      "generations": 4,
+      "hand_corrected": false
+    },
+    "vote_shfl": {
+      "chosen": "d66254b3-69f1-4101-9dd5-ae54c9728375",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: differs from the golden model on 2333 of 4000 inputs",
+      "generations": 4,
+      "hand_corrected": false
+    },
+    "simt_ctrl": {
+      "chosen": "90bc2575-ac3d-410d-8da9-76331e3d371f",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": false,
+      "detail": "RTL: differs from the golden model on 5 of 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 6,
+      "hand_corrected": true
+    },
+    "ipdom": {
+      "chosen": "851e1cda-95d4-4f18-82fb-4eaf7a7a3249",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "barrier_unit": {
+      "chosen": "c50632b7-31df-44ad-8cdc-7e9f87e99e8f",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "tensor_unit": {
+      "chosen": "8565442f-cdaf-4d7f-b1c1-bbca25f89ceb",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 3600 cycles of 30 traces; reference: differs from the golden model on 2282 of 3600 cycles",
+      "generations": 5,
+      "hand_corrected": false
+    },
+    "csr": {
+      "chosen": "c4bc41d4-5509-416e-a187-3bd5b146f371",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "cycle_ctr": {
+      "chosen": "f32f8828-f95b-4369-91e9-cfcc4155219a",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "lsu": {
+      "chosen": "a628c7f7-be54-48e7-8769-fc74225d5c29",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": false,
+      "detail": "RTL: differs from the golden model on 2943 of 6400 cycles; reference: differs from the golden model on 105 of 6400 cycles",
+      "generations": 3,
+      "hand_corrected": true
+    },
+    "bank_mux": {
+      "chosen": "4b3bf598-8d8a-4399-98b8-31066c7d8465",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 4,
+      "hand_corrected": false
+    },
+    "gbank0": {
+      "chosen": "d26d32fc-f7f0-454d-9f5f-a8a4cf0496b6",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "gbank1": {
+      "chosen": "6c19e71e-3447-4b1f-b9ad-e64606014252",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "gbank2": {
+      "chosen": "a026f127-2f02-4abd-a751-179fe6852862",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "gbank3": {
+      "chosen": "6b554de6-1780-4480-9147-6e14f59ba894",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "sbank0": {
+      "chosen": "0aee4f55-2913-4114-bd4c-da0676aa6c73",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "sbank1": {
+      "chosen": "edea2548-7cee-4faf-8926-85c9d7cc52eb",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "sbank2": {
+      "chosen": "d03d6c20-955f-48a9-b3bd-17afe8feadb1",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "sbank3": {
+      "chosen": "70a705e0-3213-4cd9-9ca9-fcdb88aacb05",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees_with_golden": false,
+      "detail": "",
+      "generations": 1,
+      "hand_corrected": false
+    },
+    "wb_mux": {
+      "chosen": "ca66ab33-b1b6-45e2-9c74-b35081d95363",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "generations": 2,
+      "hand_corrected": false
+    },
+    "host_if": {
+      "chosen": "2934b2f5-e8f3-4adf-b526-0b481ba5e1f1",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees_with_golden": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: differs from the golden model on 5548 of 6400 cycles",
+      "generations": 3,
+      "hand_corrected": false
+    }
+  }
+}

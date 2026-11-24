@@ -1,0 +1,4013 @@
+{
+  "id": "gpu-cluster",
+  "name": "GPU cluster (10 SIMT GPUs, one host bus)",
+  "version": 1,
+  "createdAt": "2026-11-20T00:00:00.000Z",
+  "blocks": [
+    {
+      "id": "b_cl_addr",
+      "name": "cluster_addr",
+      "tier": "T1",
+      "moduleName": "cluster_addr",
+      "description": "Combinational. addr is a 32-bit address. slot is addr bits 24:21 (4 bits). local_addr is addr with bits 24:21 set to 0 and every other bit unchanged. No clock, no reset, no state.",
+      "ports": [
+        {
+          "id": "p_addr",
+          "name": "addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_local_addr",
+          "name": "local_addr",
+          "direction": "out",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_slot",
+          "name": "slot",
+          "direction": "out",
+          "width": 4,
+          "role": "control"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": false
+    },
+    {
+      "id": "b_cl_fan",
+      "name": "cluster_fan",
+      "tier": "T1",
+      "moduleName": "cluster_fan",
+      "description": "Combinational. host_en is a bus request; slot (4 bits) names the core it is for. en0 .. en9 are one bit each: en<k> is 1 when host_en is 1 and slot is k or 15 (slot 15 is every core), and 0 otherwise. A slot from 10 to 14 names no core: every output is 0. No clock, no reset, no state.",
+      "ports": [
+        {
+          "id": "p_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_slot",
+          "name": "slot",
+          "direction": "in",
+          "width": 4,
+          "role": "control"
+        },
+        {
+          "id": "p_en0",
+          "name": "en0",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en1",
+          "name": "en1",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en2",
+          "name": "en2",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en3",
+          "name": "en3",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en4",
+          "name": "en4",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en5",
+          "name": "en5",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en6",
+          "name": "en6",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en7",
+          "name": "en7",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en8",
+          "name": "en8",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_en9",
+          "name": "en9",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": false
+    },
+    {
+      "id": "b_cl_rmux",
+      "name": "cluster_rmux",
+      "tier": "T1",
+      "moduleName": "cluster_rmux",
+      "description": "The read data of 10 cores on one bus. A core answers a read one cycle after the request, so the multiplexer remembers which core the request was for. One register, slot_r (4 bits): at each rising clock edge it becomes 0 when rst is 1, else takes slot when host_en is 1 and host_we is 0 (a read request), else keeps its value. sel is slot_r, except that slot_r = 15 gives sel = 0. rdata is rdata<sel> and rvalid is rvalid<sel> when sel is from 0 to 9 (the inputs rdata0 .. rdata9, 32 bits each, and rvalid0 .. rvalid9, 1 bit each); when sel is from 10 to 14, rdata is 0 and rvalid is 0. rdata and rvalid depend on the held slot_r and the inputs only, not on slot, host_en or host_we of this cycle.",
+      "ports": [
+        {
+          "id": "p_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "p_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "p_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_slot",
+          "name": "slot",
+          "direction": "in",
+          "width": 4,
+          "role": "control"
+        },
+        {
+          "id": "p_rdata0",
+          "name": "rdata0",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata1",
+          "name": "rdata1",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata2",
+          "name": "rdata2",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata3",
+          "name": "rdata3",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata4",
+          "name": "rdata4",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata5",
+          "name": "rdata5",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata6",
+          "name": "rdata6",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata7",
+          "name": "rdata7",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata8",
+          "name": "rdata8",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata9",
+          "name": "rdata9",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rvalid0",
+          "name": "rvalid0",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid1",
+          "name": "rvalid1",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid2",
+          "name": "rvalid2",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid3",
+          "name": "rvalid3",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid4",
+          "name": "rvalid4",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid5",
+          "name": "rvalid5",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid6",
+          "name": "rvalid6",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid7",
+          "name": "rvalid7",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid8",
+          "name": "rvalid8",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rvalid9",
+          "name": "rvalid9",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_rdata",
+          "name": "rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rvalid",
+          "name": "rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "sync",
+      "latencyCycles": 1,
+      "verified": false
+    },
+    {
+      "id": "b_cl_status",
+      "name": "cluster_status",
+      "tier": "T1",
+      "moduleName": "cluster_status",
+      "description": "Combinational. The inputs are the status bits of 10 cores, one bit each: running0 .. running9, done0 .. done9, error0 .. error9 and diverged0 .. diverged9. running is 1 when any running<k> is 1. done is 1 when every done<k> is 1. error is 1 when any error<k> is 1. diverged is 1 when any diverged<k> is 1. No clock, no reset, no state.",
+      "ports": [
+        {
+          "id": "p_running0",
+          "name": "running0",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running1",
+          "name": "running1",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running2",
+          "name": "running2",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running3",
+          "name": "running3",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running4",
+          "name": "running4",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running5",
+          "name": "running5",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running6",
+          "name": "running6",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running7",
+          "name": "running7",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running8",
+          "name": "running8",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running9",
+          "name": "running9",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done0",
+          "name": "done0",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done1",
+          "name": "done1",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done2",
+          "name": "done2",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done3",
+          "name": "done3",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done4",
+          "name": "done4",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done5",
+          "name": "done5",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done6",
+          "name": "done6",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done7",
+          "name": "done7",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done8",
+          "name": "done8",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done9",
+          "name": "done9",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error0",
+          "name": "error0",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error1",
+          "name": "error1",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error2",
+          "name": "error2",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error3",
+          "name": "error3",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error4",
+          "name": "error4",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error5",
+          "name": "error5",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error6",
+          "name": "error6",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error7",
+          "name": "error7",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error8",
+          "name": "error8",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error9",
+          "name": "error9",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged0",
+          "name": "diverged0",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged1",
+          "name": "diverged1",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged2",
+          "name": "diverged2",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged3",
+          "name": "diverged3",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged4",
+          "name": "diverged4",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged5",
+          "name": "diverged5",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged6",
+          "name": "diverged6",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged7",
+          "name": "diverged7",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged8",
+          "name": "diverged8",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged9",
+          "name": "diverged9",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": false
+    },
+    {
+      "id": "b_gpu_bridge",
+      "name": "gpu_bridge",
+      "tier": "T1",
+      "moduleName": "gpu_bridge",
+      "description": "Bridge from the SoC's memory stage to the GPU's host bus. Inputs: gpu_we (a store to the GPU window that is really happening), gpu_re (a load from it that is really happening), addr (32 bits, the access address), wdata (32, the store data), memtype (3, the access type: 2 is a word; 6 and 7 are reserved codes that act as a word; every other code is narrower or no access), host_rdata (32) and host_rvalid from the host bus. Outputs: host_en, host_we, host_addr (32), host_wdata (32) to the host bus, and rdata (32), what a load from the window returns. Translation, with off = addr bits 23:0: off from 000000 to 00FFFF hexadecimal is mapped to host address 30000000 | off bits 15:0 (control registers); 010000 to 0107FF to off bits 10:0, zero-extended (instruction memory); 020000 to 021FFF to 10000000 | off bits 12:0 (global memory); 030000 to 030FFF to 20000000 | off bits 11:0 (shared memory); 100000 to 1257FF to 40000000 | off bits 17:0 (video memory); 140000 to 1657FF to 40040000 | off bits 17:0 (depth memory); 180000 to 1807FF to 50000000 | off bits 10:0 (texture). Every other off is unmapped. host_addr is the mapped host address, 0 when unmapped. Outputs, at once: word = (memtype is 2, 6 or 7); host_we = mapped & gpu_we & word; host_en = host_we | (mapped & gpu_re); host_wdata = wdata; rdata = host_rdata when host_rvalid is 1, otherwise the register rdata_r. So a narrower store, or any access to an unmapped offset, is dropped. One register, rdata_r (32 bits): on each rising edge it becomes 0 when rst is 1, else takes host_rdata when host_rvalid is 1, else keeps its value. The host bus answers a read one cycle after the request (host_rvalid = 1 then), so a load returns the result of the previous GPU read and starts its own: a driver reads a GPU address twice and keeps the second value, and two loads in consecutive cycles work because the second sees host_rdata directly.",
+      "ports": [
+        {
+          "id": "p_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "p_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "p_gpu_we",
+          "name": "gpu_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_gpu_re",
+          "name": "gpu_re",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_addr",
+          "name": "addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_wdata",
+          "name": "wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_memtype",
+          "name": "memtype",
+          "direction": "in",
+          "width": 3,
+          "role": "control"
+        },
+        {
+          "id": "p_host_rdata",
+          "name": "host_rdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_host_en",
+          "name": "host_en",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_host_we",
+          "name": "host_we",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_host_addr",
+          "name": "host_addr",
+          "direction": "out",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_host_wdata",
+          "name": "host_wdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata",
+          "name": "rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "sync",
+      "latencyCycles": 1,
+      "verified": false
+    },
+    {
+      "id": "b_gpu0",
+      "name": "u_gpu0",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core0",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 0 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu1",
+      "name": "u_gpu1",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core1",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 1 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu2",
+      "name": "u_gpu2",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core2",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 2 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu3",
+      "name": "u_gpu3",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core3",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 3 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu4",
+      "name": "u_gpu4",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core4",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 4 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu5",
+      "name": "u_gpu5",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core5",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 5 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu6",
+      "name": "u_gpu6",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core6",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 6 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu7",
+      "name": "u_gpu7",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core7",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 7 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu8",
+      "name": "u_gpu8",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core8",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 8 of the cluster, not generated again"
+    },
+    {
+      "id": "b_gpu9",
+      "name": "u_gpu9",
+      "tier": "T1",
+      "moduleName": "simt_gpu_core9",
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      },
+      "description": "IP simt_gpu v1: core 9 of the cluster, not generated again"
+    }
+  ],
+  "nets": [
+    {
+      "id": "n_001",
+      "name": "clock",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_clk"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_clk"
+        },
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_clk"
+        },
+        {
+          "blockId": "b_gpu0",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu1",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu2",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu3",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu4",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu5",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu6",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu7",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu8",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_gpu9",
+          "portId": "t_clk"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_002",
+      "name": "reset",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_rst"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rst"
+        },
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_rst"
+        },
+        {
+          "blockId": "b_gpu0",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu1",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu2",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu3",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu4",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu5",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu6",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu7",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu8",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_gpu9",
+          "portId": "t_rst"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_003",
+      "name": "gpu_we",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_gpu_we"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_gpu_we"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_004",
+      "name": "gpu_re",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_gpu_re"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_gpu_re"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_005",
+      "name": "addr",
+      "width": 32,
+      "driver": {
+        "blockId": null,
+        "portId": "t_addr"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_addr",
+          "portId": "p_addr"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_006",
+      "name": "wdata",
+      "width": 32,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_wdata"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_007",
+      "name": "memtype",
+      "width": 3,
+      "driver": {
+        "blockId": null,
+        "portId": "t_memtype"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_memtype"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_008",
+      "name": "local_addr",
+      "width": 32,
+      "driver": {
+        "blockId": "b_cl_addr",
+        "portId": "p_local_addr"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_addr"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_009",
+      "name": "slot",
+      "width": 4,
+      "driver": {
+        "blockId": "b_cl_addr",
+        "portId": "p_slot"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_fan",
+          "portId": "p_slot"
+        },
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_slot"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_010",
+      "name": "host_en",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_en"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_fan",
+          "portId": "p_host_en"
+        },
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_011",
+      "name": "host_we",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_we"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_host_we"
+        },
+        {
+          "blockId": "b_gpu0",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu1",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu2",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu3",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu4",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu5",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu6",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu7",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu8",
+          "portId": "t_host_we"
+        },
+        {
+          "blockId": "b_gpu9",
+          "portId": "t_host_we"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_012",
+      "name": "host_addr",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_addr"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu0",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu1",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu2",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu3",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu4",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu5",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu6",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu7",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu8",
+          "portId": "t_host_addr"
+        },
+        {
+          "blockId": "b_gpu9",
+          "portId": "t_host_addr"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_013",
+      "name": "host_wdata",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_wdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu0",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu1",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu2",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu3",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu4",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu5",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu6",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu7",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu8",
+          "portId": "t_host_wdata"
+        },
+        {
+          "blockId": "b_gpu9",
+          "portId": "t_host_wdata"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_014",
+      "name": "host_rdata",
+      "width": 32,
+      "driver": {
+        "blockId": "b_cl_rmux",
+        "portId": "p_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_host_rdata"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_015",
+      "name": "host_rvalid",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_rmux",
+        "portId": "p_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_host_rvalid"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_016",
+      "name": "rdata",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_rdata"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_017",
+      "name": "en0",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en0"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu0",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_018",
+      "name": "rdata0",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata0"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_019",
+      "name": "rvalid0",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid0"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_020",
+      "name": "running0",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running0"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_021",
+      "name": "done0",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done0"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_022",
+      "name": "error0",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error0"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_023",
+      "name": "diverged0",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged0"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_024",
+      "name": "en1",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en1"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu1",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_025",
+      "name": "rdata1",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu1",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata1"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_026",
+      "name": "rvalid1",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu1",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid1"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_027",
+      "name": "running1",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu1",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running1"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_028",
+      "name": "done1",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu1",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done1"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_029",
+      "name": "error1",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu1",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error1"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_030",
+      "name": "diverged1",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu1",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged1"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_031",
+      "name": "en2",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en2"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu2",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_032",
+      "name": "rdata2",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu2",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata2"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_033",
+      "name": "rvalid2",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu2",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid2"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_034",
+      "name": "running2",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu2",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running2"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_035",
+      "name": "done2",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu2",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done2"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_036",
+      "name": "error2",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu2",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error2"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_037",
+      "name": "diverged2",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu2",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged2"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_038",
+      "name": "en3",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en3"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu3",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_039",
+      "name": "rdata3",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu3",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata3"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_040",
+      "name": "rvalid3",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu3",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid3"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_041",
+      "name": "running3",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu3",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running3"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_042",
+      "name": "done3",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu3",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done3"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_043",
+      "name": "error3",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu3",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error3"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_044",
+      "name": "diverged3",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu3",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged3"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_045",
+      "name": "en4",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en4"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu4",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_046",
+      "name": "rdata4",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu4",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata4"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_047",
+      "name": "rvalid4",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu4",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid4"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_048",
+      "name": "running4",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu4",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running4"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_049",
+      "name": "done4",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu4",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done4"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_050",
+      "name": "error4",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu4",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error4"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_051",
+      "name": "diverged4",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu4",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged4"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_052",
+      "name": "en5",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en5"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu5",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_053",
+      "name": "rdata5",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu5",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata5"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_054",
+      "name": "rvalid5",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu5",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid5"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_055",
+      "name": "running5",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu5",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running5"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_056",
+      "name": "done5",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu5",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done5"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_057",
+      "name": "error5",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu5",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error5"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_058",
+      "name": "diverged5",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu5",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged5"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_059",
+      "name": "en6",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en6"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu6",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_060",
+      "name": "rdata6",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu6",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata6"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_061",
+      "name": "rvalid6",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu6",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid6"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_062",
+      "name": "running6",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu6",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running6"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_063",
+      "name": "done6",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu6",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done6"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_064",
+      "name": "error6",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu6",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error6"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_065",
+      "name": "diverged6",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu6",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged6"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_066",
+      "name": "en7",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en7"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu7",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_067",
+      "name": "rdata7",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu7",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata7"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_068",
+      "name": "rvalid7",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu7",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid7"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_069",
+      "name": "running7",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu7",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running7"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_070",
+      "name": "done7",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu7",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done7"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_071",
+      "name": "error7",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu7",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error7"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_072",
+      "name": "diverged7",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu7",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged7"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_073",
+      "name": "en8",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en8"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu8",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_074",
+      "name": "rdata8",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu8",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata8"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_075",
+      "name": "rvalid8",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu8",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid8"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_076",
+      "name": "running8",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu8",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running8"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_077",
+      "name": "done8",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu8",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done8"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_078",
+      "name": "error8",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu8",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error8"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_079",
+      "name": "diverged8",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu8",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged8"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_080",
+      "name": "en9",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_fan",
+        "portId": "p_en9"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu9",
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_081",
+      "name": "rdata9",
+      "width": 32,
+      "driver": {
+        "blockId": "b_gpu9",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rdata9"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_082",
+      "name": "rvalid9",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu9",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_rmux",
+          "portId": "p_rvalid9"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_083",
+      "name": "running9",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu9",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_running9"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_084",
+      "name": "done9",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu9",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_done9"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_085",
+      "name": "error9",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu9",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_error9"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_086",
+      "name": "diverged9",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu9",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": "b_cl_status",
+          "portId": "p_diverged9"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_087",
+      "name": "gpu_running",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_status",
+        "portId": "p_running"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_running"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_088",
+      "name": "gpu_done",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_status",
+        "portId": "p_done"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_done"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_089",
+      "name": "gpu_error",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_status",
+        "portId": "p_error"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_error"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_090",
+      "name": "gpu_diverged",
+      "width": 1,
+      "driver": {
+        "blockId": "b_cl_status",
+        "portId": "p_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_diverged"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_091",
+      "name": "gpu_hsync",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_hsync"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_hsync"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_092",
+      "name": "gpu_vsync",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_vsync"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_vsync"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_093",
+      "name": "gpu_de",
+      "width": 1,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_de"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_de"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_094",
+      "name": "gpu_rgb",
+      "width": 16,
+      "driver": {
+        "blockId": "b_gpu0",
+        "portId": "t_rgb"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_rgb"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    }
+  ],
+  "topLevelPorts": [
+    {
+      "id": "t_clk",
+      "name": "clk",
+      "direction": "in",
+      "width": 1,
+      "role": "clock",
+      "blockId": null
+    },
+    {
+      "id": "t_rst",
+      "name": "rst",
+      "direction": "in",
+      "width": 1,
+      "role": "reset",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_we",
+      "name": "gpu_we",
+      "direction": "in",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_re",
+      "name": "gpu_re",
+      "direction": "in",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_addr",
+      "name": "addr",
+      "direction": "in",
+      "width": 32,
+      "role": "addr",
+      "blockId": null
+    },
+    {
+      "id": "t_wdata",
+      "name": "wdata",
+      "direction": "in",
+      "width": 32,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_memtype",
+      "name": "memtype",
+      "direction": "in",
+      "width": 3,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_rdata",
+      "name": "rdata",
+      "direction": "out",
+      "width": 32,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_running",
+      "name": "gpu_running",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_done",
+      "name": "gpu_done",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_error",
+      "name": "gpu_error",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_diverged",
+      "name": "gpu_diverged",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_hsync",
+      "name": "gpu_hsync",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_vsync",
+      "name": "gpu_vsync",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_de",
+      "name": "gpu_de",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_rgb",
+      "name": "gpu_rgb",
+      "direction": "out",
+      "width": 16,
+      "role": "data",
+      "blockId": null
+    }
+  ],
+  "constraintGroups": [],
+  "constraints": []
+}

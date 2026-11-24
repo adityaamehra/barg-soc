@@ -1,0 +1,1224 @@
+{
+  "id": "gpu-soc-hier",
+  "name": "GPU SoC from IPs (NuttX SoC + SIMT GPU)",
+  "version": 1,
+  "createdAt": "2026-11-20T00:00:00.000Z",
+  "blocks": [
+    {
+      "id": "b_ip_nuttx_soc",
+      "name": "u_nuttx_soc",
+      "moduleName": "nuttx_soc",
+      "tier": "T1",
+      "description": "IP nuttx_soc v2: 70 blocks, not generated again",
+      "ports": [
+        {
+          "id": "p_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "p_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "p_pc",
+          "name": "pc",
+          "direction": "out",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_inst",
+          "name": "inst",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_stall",
+          "name": "stall",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_zero",
+          "name": "zero",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_redirect",
+          "name": "redirect",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_alu_y_out",
+          "name": "alu_y_out",
+          "direction": "out",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_store_data_out",
+          "name": "store_data_out",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_memtype_out",
+          "name": "memtype_out",
+          "direction": "out",
+          "width": 3,
+          "role": "control",
+          "semantics": {
+            "description": "The width and extension of a data memory access.",
+            "encoding": {
+              "100": "MEM_HALF_U: two bytes, zero-extended to 32 bits",
+              "101": "NO_ACCESS: behaves as MEM_WORD; this instruction does not access data memory, and this is the code for it",
+              "110": "reserved: behaves as MEM_WORD",
+              "111": "reserved: behaves as MEM_WORD",
+              "000": "MEM_BYTE: one byte, sign-extended to 32 bits",
+              "001": "MEM_HALF: two bytes, sign-extended to 32 bits",
+              "010": "MEM_WORD: four bytes",
+              "011": "MEM_BYTE_U: one byte, zero-extended to 32 bits"
+            },
+            "total": true,
+            "status": "confirmed",
+            "owner": "user"
+          }
+        },
+        {
+          "id": "p_memwrite_out",
+          "name": "memwrite_out",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_y",
+          "name": "y",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_trap",
+          "name": "trap",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_uart_rx_valid",
+          "name": "uart_rx_valid",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_uart_rx_data",
+          "name": "uart_rx_data",
+          "direction": "in",
+          "width": 8,
+          "role": "data"
+        },
+        {
+          "id": "p_tx_valid",
+          "name": "tx_valid",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_tx_data",
+          "name": "tx_data",
+          "direction": "out",
+          "width": 8,
+          "role": "data"
+        },
+        {
+          "id": "p_gpu_we",
+          "name": "gpu_we",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_gpu_re",
+          "name": "gpu_re",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_gpu_bridge_rdata",
+          "name": "gpu_bridge_rdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ipRef": {
+        "name": "nuttx_soc",
+        "version": 2,
+        "sha256": "1a894fc26428ec51e1e667ff21f8525724448ef926b2ff136ce2e3571a1fa8cc"
+      }
+    },
+    {
+      "id": "b_gpu_bridge",
+      "name": "gpu_bridge",
+      "tier": "T1",
+      "moduleName": "gpu_bridge",
+      "description": "Bridge from the SoC's memory stage to the GPU's host bus. Inputs: gpu_we (a store to the GPU window that is really happening), gpu_re (a load from it that is really happening), addr (32 bits, the access address), wdata (32, the store data), memtype (3, the access type: 2 is a word; 6 and 7 are reserved codes that act as a word; every other code is narrower or no access), host_rdata (32) and host_rvalid from the host bus. Outputs: host_en, host_we, host_addr (32), host_wdata (32) to the host bus, and rdata (32), what a load from the window returns. Translation, with off = addr bits 23:0: off from 000000 to 00FFFF hexadecimal is mapped to host address 30000000 | off bits 15:0 (control registers); 010000 to 0107FF to off bits 10:0, zero-extended (instruction memory); 020000 to 021FFF to 10000000 | off bits 12:0 (global memory); 030000 to 030FFF to 20000000 | off bits 11:0 (shared memory); 100000 to 1257FF to 40000000 | off bits 17:0 (video memory); 140000 to 1657FF to 40040000 | off bits 17:0 (depth memory); 180000 to 1807FF to 50000000 | off bits 10:0 (texture). Every other off is unmapped. host_addr is the mapped host address, 0 when unmapped. Outputs, at once: word = (memtype is 2, 6 or 7); host_we = mapped & gpu_we & word; host_en = host_we | (mapped & gpu_re); host_wdata = wdata; rdata = host_rdata when host_rvalid is 1, otherwise the register rdata_r. So a narrower store, or any access to an unmapped offset, is dropped. One register, rdata_r (32 bits): on each rising edge it becomes 0 when rst is 1, else takes host_rdata when host_rvalid is 1, else keeps its value. The host bus answers a read one cycle after the request (host_rvalid = 1 then), so a load returns the result of the previous GPU read and starts its own: a driver reads a GPU address twice and keeps the second value, and two loads in consecutive cycles work because the second sees host_rdata directly.",
+      "ports": [
+        {
+          "id": "p_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "p_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "p_gpu_we",
+          "name": "gpu_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_gpu_re",
+          "name": "gpu_re",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_addr",
+          "name": "addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_wdata",
+          "name": "wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_memtype",
+          "name": "memtype",
+          "direction": "in",
+          "width": 3,
+          "role": "control"
+        },
+        {
+          "id": "p_host_rdata",
+          "name": "host_rdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_host_en",
+          "name": "host_en",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_host_we",
+          "name": "host_we",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_host_addr",
+          "name": "host_addr",
+          "direction": "out",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_host_wdata",
+          "name": "host_wdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_rdata",
+          "name": "rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "sync",
+      "latencyCycles": 1,
+      "verified": false
+    },
+    {
+      "id": "b_gpu",
+      "name": "u_simt_gpu",
+      "tier": "T1",
+      "moduleName": "simt_gpu",
+      "description": "IP simt_gpu v1: 82 blocks, not generated again",
+      "ports": [
+        {
+          "id": "t_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "t_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "t_host_en",
+          "name": "host_en",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_host_we",
+          "name": "host_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_host_addr",
+          "name": "host_addr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "t_host_wdata",
+          "name": "host_wdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rdata",
+          "name": "host_rdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "t_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "t_running",
+          "name": "running",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_done",
+          "name": "done",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_error",
+          "name": "error",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_diverged",
+          "name": "diverged",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_hsync",
+          "name": "hsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_vsync",
+          "name": "vsync",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_de",
+          "name": "de",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "t_rgb",
+          "name": "rgb",
+          "direction": "out",
+          "width": 16,
+          "role": "data"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "none",
+      "latencyCycles": 0,
+      "verified": true,
+      "ipRef": {
+        "name": "simt_gpu",
+        "version": 1,
+        "sha256": "2dbd2276e10f4a3b44460bb8a02473053c9219fc922743545c76e6dd191babb6"
+      }
+    }
+  ],
+  "nets": [
+    {
+      "id": "n_001",
+      "name": "clock",
+      "driver": {
+        "blockId": null,
+        "portId": "t_clk"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_clk"
+        },
+        {
+          "blockId": "b_gpu",
+          "portId": "t_clk"
+        },
+        {
+          "blockId": "b_ip_nuttx_soc",
+          "portId": "p_clk"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_002",
+      "name": "reset",
+      "driver": {
+        "blockId": null,
+        "portId": "t_rst"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_rst"
+        },
+        {
+          "blockId": "b_gpu",
+          "portId": "t_rst"
+        },
+        {
+          "blockId": "b_ip_nuttx_soc",
+          "portId": "p_rst"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_003",
+      "name": "pc",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_pc"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_pc_out"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_005",
+      "name": "fetched_inst",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_inst"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_inst_out"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_026",
+      "name": "stall",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_stall"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_stall_out"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_053",
+      "name": "alu_zero_flag",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_zero"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_alu_zero"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_057",
+      "name": "redirect",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_redirect"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_redirect_out"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_059",
+      "name": "mem_alu_y",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_alu_y_out"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_mem_addr"
+        },
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_addr"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_060",
+      "name": "mem_store_data",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_store_data_out"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_mem_wdata"
+        },
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_wdata"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_062",
+      "name": "mem_memtype",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_memtype_out"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_memtype"
+        }
+      ],
+      "width": 3,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_125",
+      "name": "mem_memwrite_ok",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_memwrite_out"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_mem_write"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_139",
+      "name": "writeback",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_y"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_wb_data_out"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_140",
+      "name": "trap",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_trap"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_trap_out"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_192",
+      "name": "uart_rx_valid",
+      "driver": {
+        "blockId": null,
+        "portId": "t_uart_rx_valid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_ip_nuttx_soc",
+          "portId": "p_uart_rx_valid"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_193",
+      "name": "uart_rx_data",
+      "driver": {
+        "blockId": null,
+        "portId": "t_uart_rx_data"
+      },
+      "sinks": [
+        {
+          "blockId": "b_ip_nuttx_soc",
+          "portId": "p_uart_rx_data"
+        }
+      ],
+      "width": 8,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_194",
+      "name": "uart_tx_valid",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_tx_valid"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_uart_tx_valid"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_195",
+      "name": "uart_tx_data",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_tx_data"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_uart_tx_data"
+        }
+      ],
+      "width": 8,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_232",
+      "name": "gpu_we",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_gpu_we"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_gpu_we"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_233",
+      "name": "gpu_re",
+      "driver": {
+        "blockId": "b_ip_nuttx_soc",
+        "portId": "p_gpu_re"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_gpu_re"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_234",
+      "name": "gpu_rdata",
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_ip_nuttx_soc",
+          "portId": "p_gpu_bridge_rdata"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_235",
+      "name": "g_host_en",
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_en"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu",
+          "portId": "t_host_en"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_236",
+      "name": "g_host_we",
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_we"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu",
+          "portId": "t_host_we"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_237",
+      "name": "g_host_addr",
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_addr"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu",
+          "portId": "t_host_addr"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_238",
+      "name": "g_host_wdata",
+      "driver": {
+        "blockId": "b_gpu_bridge",
+        "portId": "p_host_wdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu",
+          "portId": "t_host_wdata"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_240",
+      "name": "g_host_rvalid",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_host_rvalid"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_241",
+      "name": "g_running",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_running"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_running"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_242",
+      "name": "g_done",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_done"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_done"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_243",
+      "name": "g_error",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_error"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_error"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_336",
+      "name": "g_diverged",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_diverged"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_diverged"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_423",
+      "name": "g_host_rdata",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_gpu_bridge",
+          "portId": "p_host_rdata"
+        }
+      ],
+      "width": 32,
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_468",
+      "name": "g_disp_hsync",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_hsync"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_hsync"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_469",
+      "name": "g_disp_vsync",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_vsync"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_vsync"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_470",
+      "name": "g_disp_de",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_de"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_de"
+        }
+      ],
+      "width": 1,
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_471",
+      "name": "g_disp_rgb",
+      "driver": {
+        "blockId": "b_gpu",
+        "portId": "t_rgb"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_gpu_rgb"
+        }
+      ],
+      "width": 16,
+      "kind": "bus",
+      "pipelineStage": 0
+    }
+  ],
+  "topLevelPorts": [
+    {
+      "id": "t_clk",
+      "name": "clk",
+      "direction": "in",
+      "width": 1,
+      "role": "clock",
+      "blockId": null
+    },
+    {
+      "id": "t_rst",
+      "name": "rst",
+      "direction": "in",
+      "width": 1,
+      "role": "reset",
+      "blockId": null
+    },
+    {
+      "id": "t_pc_out",
+      "name": "pc_out",
+      "direction": "out",
+      "width": 32,
+      "role": "addr",
+      "blockId": null
+    },
+    {
+      "id": "t_inst_out",
+      "name": "inst_out",
+      "direction": "out",
+      "width": 32,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_mem_addr",
+      "name": "mem_addr",
+      "direction": "out",
+      "width": 32,
+      "role": "addr",
+      "blockId": null
+    },
+    {
+      "id": "t_mem_wdata",
+      "name": "mem_wdata",
+      "direction": "out",
+      "width": 32,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_mem_write",
+      "name": "mem_write",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_alu_zero",
+      "name": "alu_zero",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_stall_out",
+      "name": "stall_out",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_redirect_out",
+      "name": "redirect_out",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_wb_data_out",
+      "name": "wb_data_out",
+      "direction": "out",
+      "width": 32,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_trap_out",
+      "name": "trap_out",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_uart_rx_valid",
+      "name": "uart_rx_valid",
+      "direction": "in",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_uart_rx_data",
+      "name": "uart_rx_data",
+      "direction": "in",
+      "width": 8,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_uart_tx_valid",
+      "name": "uart_tx_valid",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_uart_tx_data",
+      "name": "uart_tx_data",
+      "direction": "out",
+      "width": 8,
+      "role": "data",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_running",
+      "name": "gpu_running",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_done",
+      "name": "gpu_done",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_error",
+      "name": "gpu_error",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_diverged",
+      "name": "gpu_diverged",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_hsync",
+      "name": "gpu_hsync",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_vsync",
+      "name": "gpu_vsync",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_de",
+      "name": "gpu_de",
+      "direction": "out",
+      "width": 1,
+      "role": "control",
+      "blockId": null
+    },
+    {
+      "id": "t_gpu_rgb",
+      "name": "gpu_rgb",
+      "direction": "out",
+      "width": 16,
+      "role": "data",
+      "blockId": null
+    }
+  ],
+  "constraintGroups": [],
+  "constraints": [],
+  "referenceMaterial": []
+}

@@ -1,0 +1,3 @@
+
+BARG SoC: Linux on four RISC-V cores that BARG generated as Verilog (simulated).
+BusyBox shell. Try: cat /proc/cpuinfo   ls /proc   mkdir /tmp/x   uname -a   free   ps   fork-test

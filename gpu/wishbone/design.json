@@ -1,0 +1,540 @@
+{
+  "id": "simt-gpu-wb",
+  "name": "Wishbone bridge for the SIMT GPU (Caravel user port to the host bus)",
+  "version": 1,
+  "createdAt": "2026-10-26T00:00:00.000Z",
+  "blocks": [
+    {
+      "id": "b_wb_bridge",
+      "name": "wb_bridge",
+      "tier": "T1",
+      "moduleName": "wb_bridge",
+      "description": "Bridge from a Wishbone B4 classic slave port to a simple host bus, one word per transfer. Inputs: wb_cyc, wb_stb, wb_we, wb_sel (4 bits), wb_adr (32), wb_dat_i (32), and from the host bus host_rdata (32) and host_rvalid. Outputs: wb_ack, wb_dat_o (32), host_en, host_we, host_addr (32), host_wdata (32). Registers, all 0 after reset: state (2 bits: 0 IDLE, 1 REQ, 2 WAIT, 3 DONE), we_r (1), addr_r (32), wdata_r (32), rdata_r (32). Outputs, all from registers (nothing depends on an input of the same cycle): host_en = (state == REQ); host_we = (state == REQ) & we_r; host_addr = addr_r; host_wdata = wdata_r; wb_ack = (state == DONE); wb_dat_o = rdata_r. On each rising edge: when rst is 1 every register becomes 0. Otherwise by state: IDLE: when wb_cyc & wb_stb: we_r = wb_we, wdata_r = wb_dat_i, rdata_r = 0 and the address is decoded as follows. The address is valid when wb_adr bits 31:20 equal 12'h300 and bits 1:0 are 0. The window is bits 19:16, with off = bits 15:0: window 0 (control registers) is mapped for every off, host address 32'h3000_0000 | off; window 1 (instruction memory) is mapped when off bits 15:11 are 0, host address = off bits 10:0 zero-extended to 32 bits; window 2 (global memory) is mapped when off bits 15:13 are 0, host address 32'h1000_0000 | off bits 12:0; window 3 (shared memory) is mapped when off bits 15:12 are 0, host address 32'h2000_0000 | off bits 11:0; any other window is unmapped. If the address is valid and mapped, and (the access is a read, or wb_sel is 4'b1111), addr_r takes the host address and the state becomes REQ. Every other access (invalid, unmapped, or a write with wb_sel not 4'b1111) is dropped: addr_r keeps its value and the state becomes DONE (rdata_r is already 0). When wb_cyc & wb_stb is not 1 nothing happens. REQ: the state becomes DONE if we_r is 1 (a write), else WAIT (a read). WAIT: when host_rvalid is 1: rdata_r = host_rdata and the state becomes DONE; otherwise nothing changes. DONE: the state becomes IDLE. So a write takes 3 cycles from the cycle in which it is accepted to the cycle of wb_ack (IDLE, REQ, DONE), a read 4 when the host answers one cycle after the request (IDLE, REQ, WAIT, DONE), and wb_ack is high for exactly the cycle in state DONE.",
+      "ports": [
+        {
+          "id": "p_clk",
+          "name": "clk",
+          "direction": "in",
+          "width": 1,
+          "role": "clock"
+        },
+        {
+          "id": "p_rst",
+          "name": "rst",
+          "direction": "in",
+          "width": 1,
+          "role": "reset"
+        },
+        {
+          "id": "p_wb_cyc",
+          "name": "wb_cyc",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_wb_stb",
+          "name": "wb_stb",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_wb_we",
+          "name": "wb_we",
+          "direction": "in",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_wb_sel",
+          "name": "wb_sel",
+          "direction": "in",
+          "width": 4,
+          "role": "control"
+        },
+        {
+          "id": "p_wb_adr",
+          "name": "wb_adr",
+          "direction": "in",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_wb_dat_i",
+          "name": "wb_dat_i",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_host_rdata",
+          "name": "host_rdata",
+          "direction": "in",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_host_rvalid",
+          "name": "host_rvalid",
+          "direction": "in",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_wb_ack",
+          "name": "wb_ack",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_wb_dat_o",
+          "name": "wb_dat_o",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        },
+        {
+          "id": "p_host_en",
+          "name": "host_en",
+          "direction": "out",
+          "width": 1,
+          "role": "valid"
+        },
+        {
+          "id": "p_host_we",
+          "name": "host_we",
+          "direction": "out",
+          "width": 1,
+          "role": "control"
+        },
+        {
+          "id": "p_host_addr",
+          "name": "host_addr",
+          "direction": "out",
+          "width": 32,
+          "role": "addr"
+        },
+        {
+          "id": "p_host_wdata",
+          "name": "host_wdata",
+          "direction": "out",
+          "width": 32,
+          "role": "data"
+        }
+      ],
+      "clockDomain": "main",
+      "resetStyle": "sync",
+      "latencyCycles": 1,
+      "verified": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "n_001",
+      "name": "clk",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_clk"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_clk"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_002",
+      "name": "rst",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_rst"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_rst"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_003",
+      "name": "wb_cyc",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wb_cyc"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_wb_cyc"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_004",
+      "name": "wb_stb",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wb_stb"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_wb_stb"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_005",
+      "name": "wb_we",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wb_we"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_wb_we"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_006",
+      "name": "wb_sel",
+      "width": 4,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wb_sel"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_wb_sel"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_007",
+      "name": "wb_adr",
+      "width": 32,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wb_adr"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_wb_adr"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_008",
+      "name": "wb_dat_i",
+      "width": 32,
+      "driver": {
+        "blockId": null,
+        "portId": "t_wb_dat_i"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_wb_dat_i"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_009",
+      "name": "host_rdata",
+      "width": 32,
+      "driver": {
+        "blockId": null,
+        "portId": "t_host_rdata"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_host_rdata"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_010",
+      "name": "host_rvalid",
+      "width": 1,
+      "driver": {
+        "blockId": null,
+        "portId": "t_host_rvalid"
+      },
+      "sinks": [
+        {
+          "blockId": "b_wb_bridge",
+          "portId": "p_host_rvalid"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_011",
+      "name": "wb_ack",
+      "width": 1,
+      "driver": {
+        "blockId": "b_wb_bridge",
+        "portId": "p_wb_ack"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_wb_ack"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_012",
+      "name": "wb_dat_o",
+      "width": 32,
+      "driver": {
+        "blockId": "b_wb_bridge",
+        "portId": "p_wb_dat_o"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_wb_dat_o"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_013",
+      "name": "host_en",
+      "width": 1,
+      "driver": {
+        "blockId": "b_wb_bridge",
+        "portId": "p_host_en"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_host_en"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_014",
+      "name": "host_we",
+      "width": 1,
+      "driver": {
+        "blockId": "b_wb_bridge",
+        "portId": "p_host_we"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_host_we"
+        }
+      ],
+      "kind": "wire",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_015",
+      "name": "host_addr",
+      "width": 32,
+      "driver": {
+        "blockId": "b_wb_bridge",
+        "portId": "p_host_addr"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_host_addr"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    },
+    {
+      "id": "n_016",
+      "name": "host_wdata",
+      "width": 32,
+      "driver": {
+        "blockId": "b_wb_bridge",
+        "portId": "p_host_wdata"
+      },
+      "sinks": [
+        {
+          "blockId": null,
+          "portId": "t_host_wdata"
+        }
+      ],
+      "kind": "bus",
+      "pipelineStage": 0
+    }
+  ],
+  "topLevelPorts": [
+    {
+      "blockId": null,
+      "id": "t_clk",
+      "name": "clk",
+      "direction": "in",
+      "width": 1,
+      "role": "clock"
+    },
+    {
+      "blockId": null,
+      "id": "t_rst",
+      "name": "rst",
+      "direction": "in",
+      "width": 1,
+      "role": "reset"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_cyc",
+      "name": "wb_cyc",
+      "direction": "in",
+      "width": 1,
+      "role": "valid"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_stb",
+      "name": "wb_stb",
+      "direction": "in",
+      "width": 1,
+      "role": "valid"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_we",
+      "name": "wb_we",
+      "direction": "in",
+      "width": 1,
+      "role": "control"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_sel",
+      "name": "wb_sel",
+      "direction": "in",
+      "width": 4,
+      "role": "control"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_adr",
+      "name": "wb_adr",
+      "direction": "in",
+      "width": 32,
+      "role": "addr"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_dat_i",
+      "name": "wb_dat_i",
+      "direction": "in",
+      "width": 32,
+      "role": "data"
+    },
+    {
+      "blockId": null,
+      "id": "t_host_rdata",
+      "name": "host_rdata",
+      "direction": "in",
+      "width": 32,
+      "role": "data"
+    },
+    {
+      "blockId": null,
+      "id": "t_host_rvalid",
+      "name": "host_rvalid",
+      "direction": "in",
+      "width": 1,
+      "role": "valid"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_ack",
+      "name": "wb_ack",
+      "direction": "out",
+      "width": 1,
+      "role": "control"
+    },
+    {
+      "blockId": null,
+      "id": "t_wb_dat_o",
+      "name": "wb_dat_o",
+      "direction": "out",
+      "width": 32,
+      "role": "data"
+    },
+    {
+      "blockId": null,
+      "id": "t_host_en",
+      "name": "host_en",
+      "direction": "out",
+      "width": 1,
+      "role": "valid"
+    },
+    {
+      "blockId": null,
+      "id": "t_host_we",
+      "name": "host_we",
+      "direction": "out",
+      "width": 1,
+      "role": "control"
+    },
+    {
+      "blockId": null,
+      "id": "t_host_addr",
+      "name": "host_addr",
+      "direction": "out",
+      "width": 32,
+      "role": "addr"
+    },
+    {
+      "blockId": null,
+      "id": "t_host_wdata",
+      "name": "host_wdata",
+      "direction": "out",
+      "width": 32,
+      "role": "data"
+    }
+  ],
+  "constraintGroups": [],
+  "constraints": [],
+  "referenceMaterial": []
+}

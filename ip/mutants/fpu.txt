@@ -1,0 +1,23 @@
+# each line: text that occurs once in rtl/barg_fpu.v => its replacement (the vectors must fail on every one); ' => ' separates because the texts contain |
+# (ea > 33 versus > 32 is not a test target: both give the same invalid-conversion result, so that mutant is equivalent and left out)
+default: inc_fn = g & (rest | lsb); => default: inc_fn = g;
+tiny = (eu < emin); => tiny = (ee < emin);
+else r = {1'b0, lg} - {1'b0, smt} - {109'd0, sticky_al}; => else r = {1'b0, lg} - {1'b0, smt};
+if (d > 16'sd0 || (d == 16'sd0 && pw >= cw)) begin => if (d >= 16'sd0) begin
+else begin r_sig = {q_q[54:0], 9'd0}; r_e = ediv_q[14:0] - 15'sd1; end => else begin r_sig = {q_q[54:0], 9'd0}; end
+ediv_q <= (mprime >>> 1) + 16'sd26; => ediv_q <= (mprime >>> 1) + 16'sd25;
+wire subn = dbl_q ? (ea < -15'sd1022) : (ea < -15'sd126); => wire subn = dbl_q ? (ea < -15'sd1023) : (ea < -15'sd126);
+else if (ka == 2'd3) mm_res = lb; => else if (ka == 2'd3) mm_res = la;
+if (op_q == 5'd14) flags_r = {(na | nb), 4'd0}; else flags_r = {anynan_ab, 4'd0}; => flags_r = {anynan_ab, 4'd0};
+e = -15'sd1023 - lz; => e = -15'sd1022 - lz;
+if (rm == 3'd1 || (rm == 3'd2 && !s) || (rm == 3'd3 && s)) res => if (rm == 3'd1 || (rm == 3'd2 && s) || (rm == 3'd3 && !s)) res
+wire neg_prod = (op_q == 5'd7) | (op_q == 5'd8); => wire neg_prod = (op_q == 5'd7);
+(a32[31] ^ b32[31]); => (a32[31] ^ a32[31]);
+5'd25: fres_r = {32'hFFFFFFFF, ia_q}; => 5'd25: fres_r = {32'h0, ia_q};
+if (!has_c) s = sp; else s = (sp == sc) ? sp : (rm == 3'd2); => if (!has_c) s = sp; else s = sp;
+kind = 2'd0; s = (rm == 3'd2);                          // exact cancellation => kind = 2'd0; s = 1'b0;                          // exact cancellation
+wire inf_zero = ((ka == 2'd2) & (kb == 2'd0)) | ((ka == 2'd0) & (kb == 2'd2)); => wire inf_zero = 1'b0;
+if (n2 > 35'h7FFFFFFF) begin f2i_res = 32'h7FFFFFFF; f2i_flags = 5'b10000; end => if (n2 > 35'h7FFFFFFF) begin f2i_res = 32'h7FFFFFFF; f2i_flags = 5'b00001; end
+rem_q <= {rem_q[57:0], n_q[111:110]} - {2'b00, q_q, 2'b01}; => rem_q <= {rem_q[57:0], n_q[111:110]};
+if (ka == 2'd3 || (ka == 2'd2 && !sa_)) begin f2i_res = unsig ? 32'hFFFFFFFF : 32'h7FFFFFFF; f2i_flags = 5'b10000; end => if (ka == 2'd3 || (ka == 2'd2 && !sa_)) begin f2i_res = unsig ? 32'h7FFFFFFF : 32'h7FFFFFFF; f2i_flags = 5'b10000; end
+else if (sa_ != sb_) lt = sa_;                          // the negative one is smaller => else if (sa_ != sb_) lt = sb_;

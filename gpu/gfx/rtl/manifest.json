@@ -1,0 +1,415 @@
+{
+  "unresolved": [],
+  "blocks": {
+    "pipe_ctrl": {
+      "job": "35a06ea9-4c45-4e53-9601-3e77061fff8d",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "decode": {
+      "job": "ed8f6d11-ae15-4085-8d77-f3b160e1eb47",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED_LOWCONF",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: differs from the golden model on 3007 of 4000 inputs",
+      "file": "delivered.v",
+      "generations": 5
+    },
+    "dx_reg": {
+      "job": "8ca99e68-48e1-4d22-8f5a-9a5575faf535",
+      "base": "http://127.0.0.1:3022",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "gfx_host": {
+      "job": "f87fc021-f16e-4709-bf06-2de9142667a9",
+      "base": "http://127.0.0.1:3022",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "disp_ctrl": {
+      "job": "6d701d61-95f7-404c-9d36-4753f509d396",
+      "base": "http://127.0.0.1:3021",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 6400 cycles of 40 traces; reference: agrees with the golden model on all 6400 cycles of 40 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "gfx_regs": {
+      "job": "68d0c395-4b3e-4e7a-8b33-c2b97797d6c5",
+      "base": "http://127.0.0.1:3022",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 3000 cycles of 30 traces; reference: agrees with the golden model on all 3000 cycles of 30 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "rop_unit": {
+      "job": "0daf47bb-6d46-427f-98cd-f54c58e5f6e3",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "local",
+      "agrees": true,
+      "detail": "candidate-1.attempt-0.v of the job (not the delivered one) agrees with the golden model on all 1500",
+      "file": "candidate-1.attempt-0.v",
+      "generations": 3
+    },
+    "vram_mux": {
+      "job": "55929cfd-e01b-47e0-9725-1f9f900c5211",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "raster_regs": {
+      "job": "a629f039-df64-4d65-bcfa-cc6251b99f4e",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "local",
+      "agrees": true,
+      "detail": "RTL (checked here, the backend's check stopped: golden check failed: cannot assign to expression (<reference): agrees with the golden model ",
+      "file": "delivered.v",
+      "generations": 4
+    },
+    "raster_eval": {
+      "job": "a6815bd6-a928-4eec-abfe-c2424b6ca4ca",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: differs from the golden model on 4 of 4000 inputs",
+      "file": "delivered.v",
+      "generations": 2
+    },
+    "gfx_sel": {
+      "job": "e9bbc555-f335-406a-a25f-4a252c953e41",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 3
+    },
+    "tex_ctrl": {
+      "job": "aca7354b-f1f1-4d6f-959c-86a35e5c9282",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 6431 cycles of 40 traces; reference: agrees with the golden model on all 6431 cycles of 40 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tex_host": {
+      "job": "b47b11d3-44d0-4435-b796-d312bbeca2bb",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tex_addr": {
+      "job": "43c86a7e-2f6f-43e7-9cb0-19da8ed40ce5",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED_LOWCONF",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tex_filter": {
+      "job": "9c5c1c42-c4fa-4006-9e20-36b7b74b0eed",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "rop_ctrl": {
+      "job": "aa63180a-a631-4f06-89e5-4357c9e9f531",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 6417 cycles of 40 traces; reference: agrees with the golden model on all 6417 cycles of 40 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "vram_rmux": {
+      "job": "f778d439-1c43-4e89-9d90-f5e8d3f437b0",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "z_ctrl": {
+      "job": "d34d475a-47ca-4b76-839c-dc896897f750",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 6420 cycles of 40 traces; reference: agrees with the golden model on all 6420 cycles of 40 traces",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "z_unit": {
+      "job": "6bea6b96-f7f5-4156-9b36-58bb1844933d",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: differs from the golden model on 2506 of 4000 inputs",
+      "file": "delivered.v",
+      "generations": 3
+    },
+    "z_host": {
+      "job": "6df01dfa-f8f7-4fa7-b599-bb3676c70483",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "REVIEW",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "z_mux": {
+      "job": "cba052f7-6e5e-40d5-80c4-5fb8aeede485",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "checked",
+      "agrees": true,
+      "detail": "RTL: agrees with the golden model on all 4000 inputs; reference: agrees with the golden model on all 4000 inputs",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank00": {
+      "job": "4a62cb10-6116-40f7-9a84-4fe871e4e17b",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank01": {
+      "job": "edc35098-e976-4ae7-a767-874abb5086fc",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank02": {
+      "job": "efebb6dc-47ae-4b9d-a5ea-67627e71c303",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank03": {
+      "job": "4c8a428b-7297-4233-b213-5805cdc872ca",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank10": {
+      "job": "ee536407-aff6-4186-8839-ad1b4069085e",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank11": {
+      "job": "be6464de-2268-40a5-ba04-3956c2b8cc2f",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank12": {
+      "job": "deb00fa1-58cf-44b1-99c2-8fdb6f7f3472",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank13": {
+      "job": "8ab9da65-433b-48c4-ac4e-78ef8f9438ab",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank20": {
+      "job": "9f18c420-b983-43e5-8a4c-544ce618028a",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank21": {
+      "job": "28a34bde-99a1-47f3-ae5f-72c49f272d7a",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank22": {
+      "job": "57ec2b05-96bf-4e74-b428-1dbb9e51a12f",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank23": {
+      "job": "c4df4964-57af-4e61-8ee6-5f18d181c273",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank30": {
+      "job": "d294e1a7-8df6-4d0a-9434-aecb6f09cea1",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank31": {
+      "job": "c7fe123d-2930-45f5-8461-0d044af349f1",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank32": {
+      "job": "8cd9f68e-280d-4c39-9544-0e79647e2607",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "tbank33": {
+      "job": "de48bc80-33a7-43e2-858e-b289b515e832",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "zbank0": {
+      "job": "89978195-88f1-4222-a16f-45633a59508c",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "zbank1": {
+      "job": "d2ca02de-94de-4d4b-bd5f-560957cf6480",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "zbank2": {
+      "job": "3acf83eb-059f-48d1-bd81-e34e6457d0e2",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    },
+    "zbank3": {
+      "job": "603c8c65-4f82-4d17-85f1-97849cebc83e",
+      "base": "http://127.0.0.1:3023",
+      "verdict": "VERIFIED",
+      "golden": "no_golden",
+      "agrees": false,
+      "detail": "",
+      "file": "delivered.v",
+      "generations": 1
+    }
+  }
+}

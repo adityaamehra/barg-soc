@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BARG quad SoC</title>
+<style>
+:root{--bg:#f3f1ec;--panel:#fff;--ink:#1c1b19;--mute:#6b665d;--line:#d9d4c9;--accent:#b4541a;--term:#14130f;--termfg:#d8f0c8;--ok:#2f7d32}
+@media (prefers-color-scheme:dark){:root{--bg:#161512;--panel:#1f1e1a;--ink:#ece8df;--mute:#9a9486;--line:#34312a;--accent:#e08a4a;--term:#0c0b09;--termfg:#cfe9bf;--ok:#7cc57f}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,sans-serif}
+header{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--line)}
+h1{font:600 17px/1 "Space Grotesk",Inter,sans-serif;margin:0;letter-spacing:.02em}
+header span{color:var(--mute)}
+main{display:grid;grid-template-columns:minmax(0,680px) minmax(0,1fr);gap:16px;padding:16px 20px;align-items:start}
+@media(max-width:1100px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+h2{font:600 11px/1 Inter,sans-serif;text-transform:uppercase;letter-spacing:.09em;color:var(--mute);margin:0 0 10px}
+#screenwrap{background:#000;border-radius:4px;line-height:0;overflow:hidden;position:relative}
+#screen{width:100%;image-rendering:pixelated;aspect-ratio:4/3;display:block;cursor:crosshair;outline:none}
+#screen:focus{box-shadow:0 0 0 2px var(--accent)}
+#screenwrap:fullscreen{display:flex;align-items:center;justify-content:center;border-radius:0;width:100vw;height:100vh}
+#screenwrap:fullscreen #screen{width:auto;height:100vh;max-width:100vw;aspect-ratio:4/3;object-fit:contain}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.ctl input[type=text]{flex:1;min-width:180px;font:13px ui-monospace,Menlo,monospace;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+.ctl label{color:var(--mute);font-size:12px}
+.ctl select{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+#hint{position:absolute;left:8px;bottom:8px;font:12px/1.3 Inter,sans-serif;color:#cfcfcf;background:#0008;padding:3px 7px;border-radius:4px;pointer-events:none}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px}
+.stat b{display:block;font:600 18px/1.2 "Space Grotesk",Inter,sans-serif}.stat small{color:var(--mute)}
+#term{background:var(--term);color:var(--termfg);font:13px/1.3 ui-monospace,"JetBrains Mono",Menlo,monospace;padding:10px;border-radius:4px;height:560px;overflow:auto;white-space:pre-wrap;word-break:break-all;outline:none}
+#term:focus{box-shadow:0 0 0 2px var(--accent)}
+.cur{background:var(--termfg);color:var(--term)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button{font:inherit;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mute);margin-right:6px}.dot.on{background:var(--ok)}
+.note{color:var(--mute);font-size:12px;margin-top:8px}
+</style></head><body>
+<header><h1>BARG quad SoC</h1><button id="start" style="background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600">&#9654; Start simulation</button><button id="stop" disabled>&#9632; Stop</button><button id="ctrlc" title="FPGA board only: send Ctrl+C (stops the running command and a running screenshot)">Ctrl+C</button><button id="ctrlcon" title="FPGA board only, once after boot: start a shell that listens to Ctrl+C">Enable Ctrl+C</button><button id="gshot" title="FPGA board only: send /tmp/gpu.raw (the frame the gpu program saved) through gzip">GPU frame</button><button id="shot" title="FPGA board only: dump the framebuffer over the UART (a few minutes)">&#128247; Screenshot</button><span id="shotmsg"></span><span>4 x RV32IMAFDC, Sv32, 10-core GPU, Linux 6.6 (Verilator simulation)</span><span id="conn"><i class="dot"></i>connecting</span></header>
+<main>
+<section class="card"><h2>Screen (GPU video memory, 320 x 240)</h2>
+<div id="screenwrap"><img id="screen" tabindex="0" alt="GPU video memory" draggable="false"><div id="hint">click the screen to type; F11 or the Fullscreen button</div></div>
+<div class="stats">
+<div class="stat"><b id="s_cyc">0</b><small>cycles simulated</small></div>
+<div class="stat"><b id="s_time">0.00 s</b><small>machine time at 100 MHz</small></div>
+<div class="stat"><b id="s_speed">-</b><small>cycles per wall second</small></div>
+<div class="stat"><b id="s_stage">starting</b><small>stage</small></div>
+</div>
+<div class="ctl">
+<button id="full" title="F">&#x26F6; Fullscreen</button>
+<label>Zoom <select id="zoom"><option value="fit">fit</option><option value="1">1x</option><option value="2">2x (640 px)</option><option value="3">3x (960 px)</option><option value="4">4x</option></select></label>
+</div>
+<div class="ctl"><label for="ps2text">Type on the PS/2 keyboard:</label>
+<input type="text" id="ps2text" placeholder="e.g. ls /   then Enter (sent as key presses to the screen shell)" autocomplete="off" spellcheck="false">
+<button id="ps2send">Send + Enter</button></div>
+<div class="note" id="mousenote">The Linux shell (<b>barg#</b>) is on the <b>screen</b>. Keyboard: click the screen and type, or use the box above (it types the text for you, handy for pasting). Mouse: move and click over the screen. Everything takes a few seconds to show: one Linux tick is 100,000 simulated cycles. The screen shows the Linux framebuffer in the GPU's video memory.</div>
+</section>
+<section class="card"><h2>Console (UART)</h2><div id="term" tabindex="0"></div>
+<div class="row"><button data-send="ls\r">ls</button><button data-send="uname -a\r">uname -a</button><button data-send="cat /proc/cpuinfo\r">cpuinfo</button><button id="clear">clear view</button></div>
+<div class="note">The shell prompt appears after roughly 200 million cycles. Verilator runs about 0.4 million cycles per second, so the boot takes several minutes.</div>
+</section></main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id), term=$("term"), scr=$("screen");
+let lines=[""],row=0,col=0,esc="",t0=Date.now(),lastCyc=0,lastT=Date.now(),stageTxt="starting";
+function put(ch){
+  if(esc){esc+=ch; if(esc.length==1&&ch!=="[") {esc="";return}
+    if(esc.length>1&&/[@-~]/.test(ch)&&ch!=="["){const m=esc.slice(1,-1);
+      if(ch==="K")lines[row]=lines[row].slice(0,col);
+      else if(ch==="J"&&(m==="2"||m==="3")){lines=[""];row=0;col=0}
+      else if(ch==="H"){row=Math.max(0,lines.length-1);col=0}
+      else if(ch==="D"){col=Math.max(0,col-(+m||1))} else if(ch==="C"){col+=(+m||1)}
+      esc=""} return}
+  if(ch==="\x1b"){esc="\x1b";return}
+  if(ch==="\r"){col=0;return}
+  if(ch==="\n"){row++;if(row>=lines.length)lines.push("");col=0;if(lines.length>2000){lines.shift();row--}return}
+  if(ch==="\b"||ch==="\x7f"){col=Math.max(0,col-1);return}
+  if(ch==="\x07"||ch<" ")return;
+  let l=lines[row];if(col>l.length)l+=" ".repeat(col-l.length);lines[row]=l.slice(0,col)+ch+l.slice(col+1);col++;
+}
+function render(){const near=term.scrollTop+term.clientHeight>=term.scrollHeight-30;
+  term.textContent="";const out=lines.map((l,i)=>i===row?l.slice(0,col)+"\u0000"+l.slice(col):l).join("\n");
+  const [a,b]=out.split("\u0000");term.append(a);const c=document.createElement("span");c.className="cur";c.textContent=(b||" ")[0];term.append(c,(b||"").slice(1));
+  if(near)term.scrollTop=term.scrollHeight}
+let pend=false;function sched(){if(!pend){pend=true;setTimeout(()=>{pend=false;render()},60)}}
+function feed(s){for(const ch of s)put(ch);
+  const all=lines.join("\n");stageTxt=/barg# $/.test(lines[row]||"")?"shell ready":/Linux version|Booting Linux/.test(all)?"kernel running":/OpenSBI/.test(all)?"OpenSBI":stageTxt;
+  $("s_stage").textContent=stageTxt;sched()}
+const wrap=$("screenwrap");
+$("full").onclick=()=>{ if(document.fullscreenElement) document.exitFullscreen(); else wrap.requestFullscreen().then(()=>scr.focus()).catch(()=>{}) };
+$("zoom").onchange=e=>{const v=e.target.value; scr.style.width=v==="fit"?"100%":(320*+v)+"px"; wrap.style.maxWidth=v==="fit"?"":(320*+v)+"px"};
+document.addEventListener("keydown",e=>{ if((e.key==="F11")&&document.activeElement!==$("ps2text")){e.preventDefault();$("full").click()} });
+function sendText(){const t=$("ps2text").value; if(!t)return; fetch("/ps2type",{method:"POST",body:JSON.stringify({text:t+"\n"})}).catch(()=>{}); $("ps2text").value=""}
+$("ps2send").onclick=sendText; $("ps2text").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();sendText()} });
+const post=u=>fetch(u,{method:"POST"}).then(r=>r.text()).catch(()=>"");
+function setRun(on){$("start").disabled=on;$("stop").disabled=!on;$("start").innerHTML=on?"Running":"&#9654; Start simulation"}
+$("gshot").onclick=()=>{post("/screenshot?src=/tmp/gpu.raw");const t=setInterval(()=>fetch("/shot").then(r=>r.json()).then(s=>{$("shotmsg").textContent=s.msg;if(!s.busy)clearInterval(t)}),3000)};
+$("shot").onclick=()=>{post("/screenshot");const t=setInterval(()=>fetch("/shot").then(r=>r.json()).then(s=>{$("shotmsg").textContent=s.msg;if(!s.busy)clearInterval(t)}),3000)};
+$("ctrlc").onclick=()=>post("/ctrlc");
+$("ctrlcon").onclick=()=>post("/ctrlc-enable");
+$("start").onclick=()=>{$("start").disabled=true;post("/start")};
+$("stop").onclick=()=>post("/stop");
+fetch("/status").then(r=>r.json()).then(s=>{setRun(s.alive);if(!s.started)$("conn").innerHTML='<i class="dot"></i>idle: press Start simulation'}).catch(()=>{});
+const send=s=>fetch("/key",{method:"POST",body:s}).catch(()=>{});
+$("clear").onclick=()=>{lines=[""];row=0;col=0;render()};
+document.querySelectorAll("[data-send]").forEach(b=>b.onclick=()=>send(JSON.parse('"'+b.dataset.send.replace(/\\x([0-9a-f]{2})/g,"\\u00$1")+'"')));
+function keyBytes(e){
+  if(e.metaKey||(e.altKey&&e.key.length>1))return null;
+  const k=e.key;
+  if(e.ctrlKey&&k.length===1&&/[a-z]/i.test(k)){const c=k.toLowerCase().charCodeAt(0)-96;return c===1?"\x01a":String.fromCharCode(c)}
+  const m={Enter:"\r",Backspace:"\x7f",Tab:"\t",Escape:"\x1b",ArrowUp:"\x1b[A",ArrowDown:"\x1b[B",ArrowRight:"\x1b[C",ArrowLeft:"\x1b[D",Delete:"\x1b[3~",Home:"\x1b[H",End:"\x1b[F"};
+  if(m[k])return m[k];return k.length===1?k:null}
+term.addEventListener("keydown",e=>{const s=keyBytes(e);if(s!==null){e.preventDefault();send(s)}});
+// the screen takes the PS/2 keyboard: KeyboardEvent.code to scan code set 2 (E0 prefixed keys are extended; a release is F0 before the code)
+const SC={KeyA:0x1C,KeyB:0x32,KeyC:0x21,KeyD:0x23,KeyE:0x24,KeyF:0x2B,KeyG:0x34,KeyH:0x33,KeyI:0x43,KeyJ:0x3B,KeyK:0x42,KeyL:0x4B,KeyM:0x3A,KeyN:0x31,KeyO:0x44,KeyP:0x4D,KeyQ:0x15,KeyR:0x2D,KeyS:0x1B,KeyT:0x2C,KeyU:0x3C,KeyV:0x2A,KeyW:0x1D,KeyX:0x22,KeyY:0x35,KeyZ:0x1A,
+Digit1:0x16,Digit2:0x1E,Digit3:0x26,Digit4:0x25,Digit5:0x2E,Digit6:0x36,Digit7:0x3D,Digit8:0x3E,Digit9:0x46,Digit0:0x45,Minus:0x4E,Equal:0x55,BracketLeft:0x54,BracketRight:0x5B,Backslash:0x5D,Semicolon:0x4C,Quote:0x52,Backquote:0x0E,Comma:0x41,Period:0x49,Slash:0x4A,
+Enter:0x5A,Space:0x29,Backspace:0x66,Tab:0x0D,Escape:0x76,CapsLock:0x58,ShiftLeft:0x12,ShiftRight:0x59,ControlLeft:0x14,AltLeft:0x11,
+F1:0x05,F2:0x06,F3:0x04,F4:0x0C,F5:0x03,F6:0x0B,F7:0x83,F8:0x0A,F9:0x01,F10:0x09,F11:0x78,F12:0x07};
+const SCX={ArrowUp:0x75,ArrowDown:0x72,ArrowLeft:0x6B,ArrowRight:0x74,Home:0x6C,End:0x69,PageUp:0x7D,PageDown:0x7A,Insert:0x70,Delete:0x71,ControlRight:0x14,AltRight:0x11,NumpadEnter:0x5A,NumpadDivide:0x4A};
+let nk=0;
+function ps2key(e,down){if(e.repeat||e.metaKey)return;let b=null;
+  if(SC[e.code]!==undefined)b=down?[SC[e.code]]:[0xF0,SC[e.code]];else if(SCX[e.code]!==undefined)b=down?[0xE0,SCX[e.code]]:[0xE0,0xF0,SCX[e.code]];
+  if(!b)return;e.preventDefault();nk++;fetch("/ps2k",{method:"POST",body:JSON.stringify(b)}).catch(()=>{})}
+scr.addEventListener("keydown",e=>ps2key(e,true));scr.addEventListener("keyup",e=>ps2key(e,false));
+// mouse over the screen: relative motion and button state, 20 events per second at most
+let mx=0,my=0,btn=0,lastSend=0,px=null,py=null;
+function mouseSend(force){const n=performance.now();if(!force&&n-lastSend<50)return;if(!force&&!mx&&!my)return;lastSend=n;
+  fetch("/mouse",{method:"POST",body:JSON.stringify({dx:mx,dy:my,b:btn})}).catch(()=>{});mx=0;my=0}
+scr.addEventListener("mousemove",e=>{const r=scr.getBoundingClientRect(),f=320/r.width;
+  if(px!==null){mx+=Math.round((e.offsetX-px)*f);my+=Math.round((e.offsetY-py)*f)}px=e.offsetX;py=e.offsetY;mouseSend(false)});
+scr.addEventListener("mouseleave",()=>{px=null;py=null});
+scr.addEventListener("mousedown",e=>{scr.focus();btn|=1<<e.button;mouseSend(true);e.preventDefault()});
+scr.addEventListener("mouseup",e=>{btn&=~(1<<e.button);mouseSend(true)});
+scr.addEventListener("contextmenu",e=>e.preventDefault());
+// frames and console come from the server
+function setFrame(){scr.src="/frame.png?"+Date.now()}
+const ev=new EventSource("/events");
+ev.addEventListener("con",e=>{const b=atob(e.data),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);feed(new TextDecoder("latin1").decode(u));$("conn").innerHTML='<i class="dot on"></i>connected'});
+ev.addEventListener("frame",e=>{const c=+e.data,n=Date.now();setFrame();$("s_cyc").textContent=c.toLocaleString();$("s_time").textContent=(c/1e8).toFixed(2)+" s";
+  if(c>lastCyc&&n>lastT){$("s_speed").textContent=Math.round((c-lastCyc)/((n-lastT)/1000)).toLocaleString()}lastCyc=c;lastT=n});
+ev.addEventListener("reset",()=>{lines=[""];row=0;col=0;lastCyc=0;lastT=Date.now();stageTxt="starting";$("s_cyc").textContent="0";$("s_time").textContent="0.00 s";$("s_speed").textContent="-";$("s_stage").textContent="starting";scr.removeAttribute("src");setRun(true);render()});
+ev.addEventListener("end",()=>{$("conn").innerHTML='<i class="dot"></i>simulator ended';setRun(false);$("s_stage").textContent="ended"});
+ev.onopen=()=>{};
+ev.onerror=()=>{$("conn").innerHTML='<i class="dot"></i>reconnecting'};
+render();term.focus();
+})();
+</script></body></html>

@@ -1,0 +1,16 @@
+#!/bin/sh
+# The BARG SoC's init: mount the pseudo file systems and give the console a real shell.
+/bin/mount -t proc proc /proc
+/bin/mount -t sysfs sysfs /sys
+/bin/mount -t devtmpfs devtmpfs /dev 2>/dev/null
+/bin/mount -t tmpfs tmpfs /tmp
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin HOME=/root TERM=vt100 USER=root PS1='barg# '
+cat /etc/motd
+if [ -e /dev/fb0 ]; then   # the screen shell is the one on /dev/console (tty0, keyboard through the PS/2 port); the UART gets a second one; a mouse arrow follows /dev/input/mice
+  echo "screen: /dev/fb0 (320x240), keyboard /dev/input/event*, mouse /dev/input/mice (arrow: cursor)"
+  echo -e '\033[9;0]' > /dev/tty0   # no console blanking
+  stty -F /dev/ttyS0 clocal 2>/dev/null   # without it opening ttyS0 waits for a modem carrier that the simulated UART never raises
+  /bin/sh </dev/ttyS0 >/dev/ttyS0 2>&1 &
+  ( while [ ! -e /dev/input/mice ]; do sleep 1; done; exec /bin/cursor ) &   # the mouse device appears about a second after init starts
+fi
+exec /bin/cttyhack /bin/sh

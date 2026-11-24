@@ -1,0 +1,17 @@
+# each line: text that occurs once in rtl/barg_cache.v | its replacement. The grid must fail on every one.
+if (!any_invalid) ptr_q[fset] <=|ptr_q[fset] <=
+(ptr_q[fset] == WAYS - 1) ? {WW{1'b0}}|(ptr_q[fset] == WAYS - 2) ? {WW{1'b0}}
+dirty_q[vic_line] <= 1'b0;|dirty_q[vic_line] <= dirty_q[vic_line];
+if (st_clean) dirty_q[st_line] <= 1'b0;|if (!st_clean) dirty_q[st_line] <= 1'b0;
+if (wr_be[b])|if (1'b1)
+end else if (inv_all) begin|end else if (inv_all && 1'b0) begin
+for (vw = WAYS - 1; vw >= 0; vw = vw - 1)|for (vw = 0; vw < WAYS; vw = vw + 1)
+assign vic_addr = {tag_q[vic_line], fset,|assign vic_addr = {tag_q[vic_line], ~fset,
+if (!found && valid_q[line] &&|if (!found &&
+off = lk_addr[g*32 + 2 +: LINE_W];|off = lk_addr[g*32 +: LINE_W];
+if (DIRTY != 0) dirty_q[wr_line] <= 1'b1;|if (DIRTY != 0) dirty_q[wr_line] <= 1'b0;
+state_q[vic_line] <= fill_state;|state_q[vic_line] <= state_q[vic_line];
+end else if (st_en) begin|end else if (st_en && !wr_en) begin
+if (inv_line >= 0) valid_q[inv_line] <= 1'b0;|if (inv_line > 0) valid_q[inv_line] <= 1'b0;
+data_q[vic_line] <= fill_data;|data_q[vic_line] <= data_q[vic_line];
+assign vic_dirty = dirty_q[vic_line] & (DIRTY != 0);|assign vic_dirty = valid_q[vic_line] & (DIRTY != 0);

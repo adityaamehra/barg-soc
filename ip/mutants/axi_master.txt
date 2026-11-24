@@ -1,0 +1,22 @@
+# each line: text that occurs once in rtl/barg_axi_master.v | its replacement. The grid must fail on every one.
+assign m_axi_arlen = line_q ? (LB - 1) : 8'd0;|assign m_axi_arlen = line_q ? (LB - 2) : 8'd0;
+data_q[beat_q*32 +: 32] <= m_axi_rdata;|data_q[0 +: 32] <= m_axi_rdata;
+if (aw_now && w_now) state <= S_B;|if (aw_now || w_now) state <= S_B;
+assign req_ready = (state == S_IDLE);|assign req_ready = (state == S_IDLE || state == S_RESP);
+err_q <= 1'b0; beat_q <= 0;|beat_q <= 0;
+assign m_axi_arsize = 3'd2;|assign m_axi_arsize = 3'd3;
+assign m_axi_arburst = 2'd1;|assign m_axi_arburst = 2'd0;
+assign m_axi_rready = (state == S_R);|assign m_axi_rready = (state == S_R) && (beat_q != 3);
+assign m_axi_awvalid = (state == S_W) && !aw_done;|assign m_axi_awvalid = (state == S_W);
+if (m_axi_rresp != 2'b00) err_q <= 1'b1;|if (m_axi_rresp != 2'b00) err_q <= err_q;
+if (m_axi_bresp != 2'b00) err_q <= 1'b1;|if (m_axi_bresp != 2'b00) err_q <= err_q;
+assign m_axi_awlen = wl_q ? (LB - 1) : 8'd0;|assign m_axi_awlen = wl_q ? (LB - 2) : 8'd0;
+assign m_axi_wlast = wl_q ? (beat_q == LB - 1) : 1'b1;|assign m_axi_wlast = 1'b1;
+assign m_axi_wstrb = wl_q ? 4'hF : wstrb_q;|assign m_axi_wstrb = wl_q ? 4'h3 : wstrb_q;
+if (wl_q && beat_q != LB - 1) beat_q <= beat_q + 1'b1; else w_done <= 1'b1;|if (wl_q && beat_q != LB - 1) beat_q <= beat_q; else w_done <= 1'b1;
+wl_q <= req_line & req_we;|wl_q <= 1'b0;
+
+assign m_axi_wlast = wl_q ? (beat_q == LB - 1) : 1'b1;|assign m_axi_wlast = 1'b0;
+wire w_now = w_done || (m_axi_wready && (!wl_q || beat_q == LB - 1)); => wire w_now = w_done || m_axi_wready;
+
+addr_q <= req_line ? (req_addr & ~((LB * 4) - 1)) : {req_addr[31:2], 2'b00};|addr_q <= req_line ? (req_addr & ~((LB * 2) - 1)) : {req_addr[31:2], 2'b00};

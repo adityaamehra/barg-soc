@@ -1,0 +1,23 @@
+[tasks]
+small  prove
+wide   prove
+deep   bmc
+
+[options]
+prove: mode prove
+prove: depth 6
+deep: mode bmc
+deep: depth 24
+
+[engines]
+smtbmc yices
+
+[script]
+read -formal -DFORMAL barg_axil_regs.v
+small: chparam -set ADDR_W 4 -set DATA_W 32 -set N_RW 2 -set N_RO 1 barg_axil_regs
+wide:  chparam -set ADDR_W 6 -set DATA_W 64 -set N_RW 3 -set N_RO 2 barg_axil_regs
+deep:  chparam -set ADDR_W 3 -set DATA_W 32 -set N_RW 1 -set N_RO 0 barg_axil_regs
+prep -top barg_axil_regs
+
+[files]
+../rtl/barg_axil_regs.v
